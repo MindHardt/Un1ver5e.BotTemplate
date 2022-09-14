@@ -4,7 +4,6 @@ using Disqord.Gateway;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Bot
 {
@@ -26,8 +25,11 @@ namespace Bot
             return new HostBuilder()
             .UseSerilog((ctx, logger) =>
             {
-                logger                                          //Configuring logging
-                .ReadFrom.Configuration(ctx.Configuration);     //It is read from config
+                //Configuring logging, it is read from config
+                //But we explicitly ignore websocket exception cuz it is noisy yet harmless
+                logger
+                .ReadFrom.Configuration(ctx.Configuration)
+                .Filter.ByExcluding(e => e.Exception is Disqord.WebSocket.WebSocketClosedException);
             })
             .ConfigureAppConfiguration(config =>
             {
