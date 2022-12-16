@@ -17,7 +17,7 @@ namespace Bot.Commands
             DateTimeOffset launchTime = Process.GetCurrentProcess().StartTime;
 
             string launchTimeStamp = launchTime.ToRelativeDiscordTime();
-            string latencyTimeStamp = $"Задержка сокета `{((int)latency.TotalMilliseconds)}`мс.";
+            string latencyTimeStamp = $"Задержка сокета `{(int)latency.TotalMilliseconds}`мс.";
 
             LocalInteractionMessageResponse response = new LocalInteractionMessageResponse()
                 .AddEmbed(new LocalEmbed()

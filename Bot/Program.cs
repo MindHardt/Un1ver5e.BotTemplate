@@ -11,12 +11,12 @@ namespace Bot
     {
         static void Main(string[] args)
         {
-            using var host = CreateHost(args); //Creating host
-            host.Run(); //Running
+            using IHost host = CreateHost(args);
+            host.Run();
         }
 
         /// <summary>
-        /// This creates a <see cref="Microsoft.Extensions.Hosting.IHost"/> object that has all the information about bot.
+        /// Creates a <see cref="Microsoft.Extensions.Hosting.IHost"/> object that has all the information about bot.
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
@@ -26,7 +26,7 @@ namespace Bot
             .UseSerilog((ctx, logger) =>
             {
                 //Configuring logging, it is read from config
-                //But we explicitly ignore websocket exception cuz it is noisy yet harmless
+                //But we explicitly ignore websocket exception cuz it is noisy but harmless
                 logger
                 .ReadFrom.Configuration(ctx.Configuration)
                 .Filter.ByExcluding(e => e.Exception is Disqord.WebSocket.WebSocketClosedException);
@@ -34,7 +34,7 @@ namespace Bot
             .ConfigureAppConfiguration(config =>
             {
                 config                              //Adding configuration (Microsoft.Extensions.Configuration)
-                .AddJsonFile("appsettings.json")    //Json file
+                .AddJsonFile("appsettings.json", true)    //Json file
                 .AddCommandLine(args)               //Command line args
                 .AddEnvironmentVariables();         //Env variables (used for containers)
             })

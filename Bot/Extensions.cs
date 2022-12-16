@@ -14,10 +14,10 @@ namespace Bot
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The original collection.</param>
         /// <returns></returns>
-        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> collection, Random? randomOverride = null)
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> collection, Func<IComparable>? randomizer = null)
         {
-            Random random = randomOverride ?? Random.Shared;
-            return collection.OrderBy((e) => random.Next());
+            Func<IComparable> random = randomizer ?? (() => Random.Shared.Next());
+            return collection.OrderBy((e) => random());
         }
 
         /// <summary>
@@ -26,10 +26,10 @@ namespace Bot
         /// <typeparam name="T"></typeparam>
         /// <param name="collection"></param>
         /// <returns></returns>
-        public static T GetRandomElement<T>(this IEnumerable<T> collection, Random? randomOverride = null)
+        public static T GetRandomElement<T>(this IEnumerable<T> collection, Func<IComparable>? randomizer = null)
         {
-            Random random = randomOverride ?? Random.Shared;
-            return collection.MaxBy((e) => random.Next())!;
+			Func<IComparable> random = randomizer ?? (() => Random.Shared.Next());
+			return collection.MaxBy((e) => random())!;
         }
 
         /// <summary>
