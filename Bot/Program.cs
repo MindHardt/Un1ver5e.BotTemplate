@@ -40,17 +40,17 @@ namespace Bot
             })
             .ConfigureDiscordBot((ctx, bot) =>
             {
-                IConfigurationSection config = ctx.Configuration.GetSection("DiscordBot");  //Reading discord config
+                var cfg = ctx.Configuration;  //Reading discord config
 
                 //Reading token, it must be present.
-                bot.Token = config["Token"] ??
+                bot.Token = cfg["Token"] ??
                     throw new ArgumentNullException("Token", "Token not found, check your configuration.");
 
                 //Reading owner ids, they may be absent.
-                bot.OwnerIds = config.GetSection("OwnerIds").Get<ulong[]>()?.Select(id => (Snowflake)id);
+                bot.OwnerIds = cfg.GetSection("OwnerIds").Get<ulong[]>()?.Select(id => (Snowflake)id);
 
                 //Reading prefixes for text commands. They may be absent.
-                bot.Prefixes = config.GetSection("Prefixes").Get<string[]>();
+                bot.Prefixes = cfg.GetSection("Prefixes").Get<string[]>();
 
                 //Bots gateway intents. This should correspond with ones enables in discord developer portal.
                 //This may be changed to fit your bot's needs.

@@ -38,14 +38,31 @@ namespace Bot
         /// <param name="original">The original text</param>
         /// <param name="lang">The language used for formatting, i.e. "CS", "XML", "JSON"...</param>
         /// <returns></returns>
-        public static string AsCodeBlock(this string original, string? lang = null) => $"```{lang ?? string.Empty}\n{original}```";
+        public static string AsCodeBlock(this string original, string? lang = null) => $"```{lang}\n{original}```";
 
-        /// <summary>
-        /// Formats <paramref name="time"/> as a discord timestamp, which dynamically changes according to current system time of a discord user.
-        /// </summary>
-        /// <param name="time"></param>
-        /// <returns></returns>
-        public static string ToRelativeDiscordTime(this DateTimeOffset time) => $"<t:{time.ToUnixTimeSeconds()}:R>";
+		/// <summary>
+		/// Gets a discord timestamp for <paramref name="time"/>. 
+        /// The type of timestamp is defined by <paramref name="type"/>:
+        /// <list type="bullet">
+        /// <item>R - Relative</item>
+        /// <item>d - Short date</item>
+        /// <item>D - Long date</item>
+        /// <item>t - Short time</item>
+        /// <item>T - Long time (including seconds)</item>
+        /// <item>f - Short datetime</item>
+        /// <item>F - Long datetime</item>
+        /// </list>
+		/// </summary>
+		/// <param name="time"></param>
+		/// <param name="type">A letter describing a type of a timestamp.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public static string ToDiscordTimestamp(this DateTimeOffset time, char type = 'R')
+        {
+            char[] types = { 'd', 'D', 't', 'T', 'f', 'F', 'R' };
+            if (types.Contains(type) is false) throw new ArgumentOutOfRangeException(nameof(type));
+            return $"<t:{time.ToUnixTimeSeconds()}:{type}>";
+		}
 
         /// <summary>
         /// Chunks <paramref name="collection"/> into pages at maximum length of <paramref name="maxPageLen"/>.
