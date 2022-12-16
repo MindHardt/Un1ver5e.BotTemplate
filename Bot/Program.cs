@@ -9,18 +9,18 @@ namespace Bot
 {
     internal class Program
     {
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
             using IHost host = CreateHost(args);
             host.Run();
         }
 
-        /// <summary>
-        /// Creates a <see cref="Microsoft.Extensions.Hosting.IHost"/> object that has all the information about bot.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        static IHost CreateHost(string[] args)
+		/// <summary>
+		/// Creates a <see cref="Microsoft.Extensions.Hosting.IHost"/> object that has all the information about bot.
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		internal static IHost CreateHost(string[] args)
         {
             return new HostBuilder()
             .UseSerilog((ctx, logger) =>
@@ -40,14 +40,14 @@ namespace Bot
             })
             .ConfigureDiscordBot((ctx, bot) =>
             {
-                var cfg = ctx.Configuration;  //Reading discord config
+                var cfg = ctx.Configuration.GetSection("DiscordBot");  //Reading discord config
 
                 //Reading token, it must be present.
                 bot.Token = cfg["Token"] ??
-                    throw new ArgumentNullException("Token", "Token not found, check your configuration.");
-
+                    throw new ArgumentNullException("Token", "Discord bot token not found, check your configuration.");
+            
                 //Reading owner ids, they may be absent.
-                bot.OwnerIds = cfg.GetSection("OwnerIds").Get<ulong[]>()?.Select(id => (Snowflake)id);
+                bot.OwnerIds = cfg.GetSection("OwnerIds").Get<Snowflake[]>();
 
                 //Reading prefixes for text commands. They may be absent.
                 bot.Prefixes = cfg.GetSection("Prefixes").Get<string[]>();
